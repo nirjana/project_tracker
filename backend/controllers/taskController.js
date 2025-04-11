@@ -1,4 +1,5 @@
 import Task from "../models/task.js";
+import mongoose from "mongoose";
 
 export const getTasks = async (req, res) => {
   try {
@@ -16,12 +17,23 @@ export const getTasksByProject = async (req, res) => {
 
 export const createTask = async (req, res) => {
   const { title, status, projectId } = req.body;
-  if (!title || !projectId)
-    return res.status(400).json({ message: "Title and projectId required" });
 
-  const task = new Task({ title, status, projectId });
-  const saved = await task.save();
-  res.status(201).json(saved);
+  if (!title || !projectId) {
+    return res.status(400).json({ message: "Title and projectId required" });
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(projectId)) {
+    return res.status(400).json({ message: "Invalid projectId format" });
+  }
+
+  try {
+    const task = new Task({ title, status, projectId });
+    const saved = await task.save();
+    res.status(201).json(saved);
+  } catch (error) {
+    console.error("Error creating task:", error.message);
+    res.status(500).json({ message: error.message });
+  }
 };
 
 export const updateTaskStatus = async (req, res) => {
