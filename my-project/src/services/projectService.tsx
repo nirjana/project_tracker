@@ -1,27 +1,7 @@
 import axios from "axios";
+import { Project, Task } from "../types/types";
 
 const API_URL = "http://localhost:4000/api";
-
-// -----------------
-// Type Definitions
-// -----------------
-
-export interface Task {
-  _id: string;
-  title: string;
-  status: string;
-  projectId?: string;
-}
-
-export interface Project {
-  _id: string;
-  title: string;
-  tasks?: Task[];
-}
-
-// -----------------
-// API Functions
-// -----------------
 
 export const getProjects = async (): Promise<Project[]> => {
   try {

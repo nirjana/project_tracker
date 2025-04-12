@@ -5,7 +5,7 @@ import {
   getTasksByProject,
   addTaskToProject,
   updateTaskStatus as updateTaskStatusAPI,
-} from "../api/projectApi";
+} from "../services/projectService";
 import * as React from "react";
 // -----------------
 // Type Definitions

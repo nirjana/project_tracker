@@ -18,7 +18,7 @@ const AppContent: React.FC = () => {
   console.log(projects, "ok");
 
   return (
-    <div className="p-4 max-w-2xl mx-auto font-sans">
+    <div className="p-4  mx-auto font-sans">
       {!selectedProject ? (
         <ProjectList
           projects={projects}
