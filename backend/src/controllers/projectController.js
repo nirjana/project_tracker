@@ -51,10 +51,8 @@ const deleteProject = async (req, res, next) => {
 const updateProject = async (req, res, next) => {
   const { projectId } = req.params;
   const { title, description } = req.body;
-  console.log(projectId, title, description, "pppppppppppp");
 
   try {
-    // Find the project by ID and update it
     const updatedProject = await Project.findByIdAndUpdate(
       projectId,
       { title, description },
