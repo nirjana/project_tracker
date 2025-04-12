@@ -1,7 +1,10 @@
 # Project Management
 ## Description
 Project Management
-1.
+✅ Successfully implemented two models: Project (title, description) and Task (title, status, projectId).
+✅ Created basic CRUD API endpoints for both models with input validation and enum constraints for task status.
+✅ Developed a React frontend with project and task list views, task creation, and status updates via dropdown.
+✅ UI updates dynamically after actions, with no page reload required — keeping the UX clean and responsive.
 
 ## Features
 ✨ Features Implemented
@@ -62,10 +65,7 @@ The frontend will be served at:
 
 Final Output :
 
-✅ Successfully implemented two models: Project (title, description) and Task (title, status, projectId).
-✅ Created basic CRUD API endpoints for both models with input validation and enum constraints for task status.
-✅ Developed a React frontend with project and task list views, task creation, and status updates via dropdown.
-✅ UI updates dynamically after actions, with no page reload required — keeping the UX clean and responsive.
+
 
 # main page
 ![image](https://github.com/user-attachments/assets/352b3ede-4cda-47d5-9560-d40fbb64a52f)
