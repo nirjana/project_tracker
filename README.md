@@ -36,9 +36,9 @@ Install dependencies
 
 - npm install
 
-Setup .env
-- MONGO_URI= mongodb+srv://gaihresujata:Project_tracker@cluster0.duoenrd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-- PORT=5000
+Setup .env (Copy this MonGO_URI completely)
+- `MONGO_URI= mongodb+srv://gaihresujata:Project_tracker@cluster0.duoenrd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
+- `PORT=4000`
 
 Start the backend server
 - npm run dev
@@ -46,7 +46,7 @@ Start the backend server
 This will start the backend API at:
 📡 http://localhost:4000/api
 
-🎨 Frontend Setup (React + TypeScript + Vite)
+# 🎨 Frontend Setup (React + TypeScript + Vite)
 
 Open a new terminal window/tab
 Navigate to the frontend project folder
