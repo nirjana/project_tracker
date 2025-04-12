@@ -17,12 +17,6 @@ const AppContent: React.FC = () => {
     deleteProjectById,
   } = useProjects();
 
-  console.log(projects, "ok");
-  const handleDeleteTask = async (taskId: string): Promise<string | null> => {
-    const result = await deleteTask(taskId);
-    return result;
-  };
-
   return (
     <div className="p-4  mx-auto font-sans">
       {!selectedProject ? (
@@ -38,7 +32,7 @@ const AppContent: React.FC = () => {
           onBack={() => setSelectedProject(null)}
           onAddTask={addTask}
           onUpdateStatus={updateTaskStatus}
-          onDeleteTask={handleDeleteTask}
+          onDeleteTask={deleteTask}
         />
       )}
     </div>
