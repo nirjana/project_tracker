@@ -41,6 +41,7 @@ const TaskList: React.FC<TaskListProps> = ({
 
   const handleDeleteTask = async (taskId: string) => {
     const deleteMessage = await onDeleteTask(taskId);
+
     if (deleteMessage) {
       setSuccessMessage(deleteMessage);
       setTimeout(() => setSuccessMessage(null), 3000);
