@@ -3,13 +3,12 @@ import {
   getProjects,
   addProject as addProjectAPI,
   getTasksByProject,
+  deleteTask as deleteTaskAPI,
   addTaskToProject,
   updateTaskStatus as updateTaskStatusAPI,
+  deleteProject,
 } from "../services/projectService";
 import * as React from "react";
-// -----------------
-// Type Definitions
-// -----------------
 
 export interface Task {
   _id: string;
@@ -37,6 +36,8 @@ interface ProjectContextType {
   ) => Promise<void>;
   setSelectedProject: React.Dispatch<React.SetStateAction<Project | null>>;
   loading: boolean;
+  deleteTask: (taskId: string) => Promise<string | null>; // updated here
+  deleteProjectById: (projectId: string) => Promise<string | null>;
 }
 
 export type { ProjectContextType };
@@ -123,6 +124,46 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({
       console.error("Error updating task status:", err);
     }
   };
+  const deleteTask = async (taskId: string): Promise<string | null> => {
+    try {
+      const response = await deleteTaskAPI(taskId);
+
+      setSelectedProject((prevSelectedProject) => {
+        if (prevSelectedProject) {
+          return {
+            ...prevSelectedProject,
+            tasks:
+              prevSelectedProject.tasks?.filter(
+                (task) => task._id !== taskId
+              ) || [],
+          };
+        }
+        return prevSelectedProject;
+      });
+
+      return response.message;
+    } catch (error) {
+      console.error("Failed to delete task", error);
+      return null;
+    }
+  };
+
+  const deleteProjectById = async (
+    projectId: string
+  ): Promise<string | null> => {
+    try {
+      const response = await deleteProject(projectId);
+
+      setProjects((prev) => prev.filter((p) => p._id !== projectId));
+
+      setSelectedProject((prev) => (prev?._id === projectId ? null : prev));
+
+      return response.message;
+    } catch (error) {
+      console.error("Failed to delete project", error);
+      return null;
+    }
+  };
 
   return (
     <ProjectContext.Provider
@@ -134,7 +175,10 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({
         addProject,
         addTask,
         updateTaskStatus,
+        deleteTask,
         setSelectedProject,
+        deleteProjectById,
+
         loading,
       }}
     >
