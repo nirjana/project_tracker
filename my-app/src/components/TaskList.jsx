@@ -10,28 +10,31 @@ const TaskList = ({ project, onBack, onAddTask, onUpdateStatus }) => {
       <h2 className="text-xl font-bold mb-2">{project.name} - Tasks</h2>
 
       <ul className="space-y-2 mb-4">
-        {project.tasks.map((task) => (
-          <li
-            key={task.id}
-            className="flex justify-between items-center border p-2 rounded"
-          >
-            <span>{task.name}</span>
-            <select
-              className="border px-2 py-1"
-              value={task.status}
-              onChange={(e) =>
-                onUpdateStatus(project.id, task.id, e.target.value)
-              }
+        {project.tasks && project.tasks.length > 0 ? (
+          project.tasks.map((task) => (
+            <li
+              key={task._id}
+              className="flex justify-between items-center border p-2 rounded"
             >
-              <option value="todo">To Do</option>
-              <option value="in-progress">In Progress</option>
-              <option value="done">Done</option>
-            </select>
-          </li>
-        ))}
+              <span>{task.title}</span>
+              <select
+                className="border px-2 py-1"
+                value={task.status}
+                onChange={(e) =>
+                  onUpdateStatus(project._id, task._id, e.target.value)
+                }
+              >
+                <option value="todo">To Do</option>
+                <option value="in-progress">In Progress</option>
+                <option value="done">Done</option>
+              </select>
+            </li>
+          ))
+        ) : (
+          <p>No tasks available.</p>
+        )}
       </ul>
-
-      <AddTaskForm onAdd={(taskName) => onAddTask(project.id, taskName)} />
+      <AddTaskForm onAdd={onAddTask} projectId={project._id} />
     </div>
   );
 };
