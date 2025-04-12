@@ -48,4 +48,27 @@ const deleteProject = async (req, res, next) => {
   }
 };
 
-export { getProjects, createProject, deleteProject };
+const updateProject = async (req, res, next) => {
+  const { projectId } = req.params;
+  const { title, description } = req.body;
+  console.log(projectId, title, description, "pppppppppppp");
+
+  try {
+    // Find the project by ID and update it
+    const updatedProject = await Project.findByIdAndUpdate(
+      projectId,
+      { title, description },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedProject) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    res.status(200).json(updatedProject);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { getProjects, createProject, deleteProject, updateProject };
