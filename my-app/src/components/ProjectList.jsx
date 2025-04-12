@@ -20,10 +20,10 @@ const ProjectList = ({ projects, onAddProject, onSelect }) => {
             key={project.id}
             className="flex justify-between items-center mb-2"
           >
-            <span>{project.name}</span>
+            <span>{project.title}</span>
             <button
               className="bg-blue-500 text-white px-2 py-1 rounded"
-              onClick={() => onSelect(project.id)}
+              onClick={() => onSelect(project._id)}
             >
               View Tasks
             </button>

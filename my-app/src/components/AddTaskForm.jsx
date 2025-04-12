@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 
-const AddTaskForm = ({ onAdd }) => {
-  const [taskName, setTaskName] = useState("");
+const AddTaskForm = ({ onAdd, projectId }) => {
+  const [taskTitle, setTaskTitle] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (taskName.trim()) {
-      onAdd(taskName.trim());
-      setTaskName("");
+    if (taskTitle.trim()) {
+      onAdd(projectId, taskTitle.trim());
+      setTaskTitle("");
     }
   };
 
@@ -15,15 +15,15 @@ const AddTaskForm = ({ onAdd }) => {
     <form onSubmit={handleSubmit} className="flex gap-2">
       <input
         className="border px-2 py-1 flex-grow"
-        value={taskName}
-        onChange={(e) => setTaskName(e.target.value)}
-        placeholder="New task name"
+        value={taskTitle}
+        onChange={(e) => setTaskTitle(e.target.value)}
+        placeholder="New task title"
       />
       <button
         className="bg-green-500 text-white px-3 py-1 rounded"
         type="submit"
       >
-        Add Task
+        Add Task Title
       </button>
     </form>
   );
