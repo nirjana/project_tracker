@@ -6,7 +6,7 @@ export const getTasks = async (req, res) => {
     const tasks = await Task.find();
     res.json(tasks);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    next(error);
   }
 };
 
@@ -15,15 +15,19 @@ export const getTasksByProject = async (req, res) => {
   res.json(tasks);
 };
 
-export const createTask = async (req, res) => {
+export const createTask = async (req, res, next) => {
   const { title, status, projectId } = req.body;
 
   if (!title || !projectId) {
-    return res.status(400).json({ message: "Title and projectId required" });
+    const err = new Error("Title and projectId required");
+    err.statusCode = 400;
+    return next(err);
   }
 
   if (!mongoose.Types.ObjectId.isValid(projectId)) {
-    return res.status(400).json({ message: "Invalid projectId format" });
+    const err = new Error("Invalid projectId format");
+    err.statusCode = 400;
+    return next(err);
   }
 
   try {
@@ -31,21 +35,35 @@ export const createTask = async (req, res) => {
     const saved = await task.save();
     res.status(201).json(saved);
   } catch (error) {
-    console.error("Error creating task:", error.message);
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
-export const updateTaskStatus = async (req, res) => {
+export const updateTaskStatus = async (req, res, next) => {
   const { status } = req.body;
   const allowed = ["todo", "in-progress", "done"];
-  if (!allowed.includes(status))
-    return res.status(400).json({ message: "Invalid status" });
 
-  const updated = await Task.findByIdAndUpdate(
-    req.params.id,
-    { status },
-    { new: true }
-  );
-  res.json(updated);
+  if (!allowed.includes(status)) {
+    const err = new Error("Invalid status");
+    err.statusCode = 400;
+    return next(err);
+  }
+
+  try {
+    const updated = await Task.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+
+    if (!updated) {
+      const err = new Error("Task not found");
+      err.statusCode = 404;
+      return next(err);
+    }
+
+    res.json(updated);
+  } catch (error) {
+    next(error);
+  }
 };

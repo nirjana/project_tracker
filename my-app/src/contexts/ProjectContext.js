@@ -12,6 +12,7 @@ export const ProjectContext = createContext();
 export const ProjectProvider = ({ children }) => {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchProjects();
@@ -21,8 +22,10 @@ export const ProjectProvider = ({ children }) => {
     try {
       const data = await getProjects();
       setProjects(data);
+      setLoading(false);
     } catch (err) {
       console.error("Error loading projects:", err);
+      setLoading(false);
     }
   };
 
@@ -80,6 +83,7 @@ export const ProjectProvider = ({ children }) => {
         addTask,
         updateTaskStatus,
         setSelectedProject,
+        loading,
       }}
     >
       {children}

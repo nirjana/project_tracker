@@ -5,7 +5,7 @@ const getProjects = async (req, res) => {
     const projects = await Project.find();
     res.json(projects);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
@@ -16,7 +16,7 @@ const createProject = async (req, res) => {
     await newProject.save();
     res.status(201).json(newProject);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    next(error);
   }
 };
 
