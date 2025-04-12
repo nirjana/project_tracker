@@ -36,15 +36,6 @@ export const updateProject = async (
   return res.data;
 };
 
-export const deleteProject = async (
-  id: string
-): Promise<{ message: string }> => {
-  const res = await axios.delete<{ message: string }>(
-    `${API_URL}/projects/${id}`
-  );
-  return res.data;
-};
-
 export const addTaskToProject = async (
   projectId: string,
   title: string
@@ -84,6 +75,34 @@ export const updateTaskStatus = async (
     return response.data;
   } catch (error) {
     console.error("Error updating task status:", error);
+    throw error;
+  }
+};
+
+export const deleteTask = async (
+  taskId: string
+): Promise<{ message: string }> => {
+  try {
+    const response = await axios.delete<{ message: string }>(
+      `${API_URL}/tasks/${taskId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting task:", error);
+    throw error;
+  }
+};
+
+export const deleteProject = async (
+  projectId: string
+): Promise<{ message: string }> => {
+  try {
+    const response = await axios.delete<{ message: string }>(
+      `${API_URL}/projects/${projectId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting task:", error);
     throw error;
   }
 };

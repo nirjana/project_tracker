@@ -17,6 +17,7 @@ export interface ProjectListProps {
   projects: Project[];
   onAddProject: (projectName: string) => void;
   onSelect: (projectId: string) => void;
+  deleteProject: (projectId: string) => Promise<string | null>;
 }
 
 export interface ProjectContextType {
@@ -32,5 +33,7 @@ export interface ProjectContextType {
     status: string
   ) => Promise<void>;
   setSelectedProject: React.Dispatch<React.SetStateAction<Project | null>>;
+  deleteTask: (taskId: string) => Promise<void>;
+
   loading: boolean;
 }

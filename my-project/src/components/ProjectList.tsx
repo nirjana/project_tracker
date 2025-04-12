@@ -1,12 +1,12 @@
 import * as React from "react";
 import { useState, FormEvent, ChangeEvent } from "react";
-
 import { ProjectListProps } from "../types/types";
 
 const ProjectList: React.FC<ProjectListProps> = ({
   projects,
   onAddProject,
   onSelect,
+  deleteProject,
 }) => {
   const [projectName, setProjectName] = useState<string>("");
 
@@ -18,53 +18,80 @@ const ProjectList: React.FC<ProjectListProps> = ({
     }
   };
 
+  const handleProjectNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setProjectName(e.target.value);
+  };
+
+  const handleDelete = async (projectId: string) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this project?"
+    );
+    if (!confirmDelete) return;
+
+    const message = await deleteProject(projectId);
+    if (message) {
+      alert(message);
+    }
+  };
+
+  const handleSelect = (projectId: string) => {
+    onSelect(projectId);
+  };
+
   return (
-    <div className="w-full flex flex-col items-center justify-center">
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <h1 className="text-4xl font-extrabold text-white mb-8 text-center">
-          📁 Projects
-        </h1>
+    <div className="w-full min-h-screen bg-gray-50 flex flex-col items-center py-16 px-4">
+      <h1 className="text-5xl font-extrabold text-gray-800 mb-12 text-center">
+        📁 Your Projects
+      </h1>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6 justify-center">
-          {projects.map((project) => (
-            <div
-              key={project._id}
-              className="bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-2xl transition duration-300 ease-in-out hover:scale-105 transform "
-            >
-              <div className="p-6 bg-gradient-to-r from-blue-300 via-blue-400 to-blue-500 rounded-t-xl ">
-                <h2 className="text-xl font-semibold text-white truncate">
-                  {project.title}
-                </h2>
-              </div>
-              <div className="p-4 flex justify-center">
-                <button
-                  className="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 hover:shadow-xl transition transform hover:scale-105"
-                  onClick={() => onSelect(project._id)}
-                >
-                  View Tasks
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <form onSubmit={handleSubmit} className="flex gap-4 mt-8">
-          <input
-            className="border border-gray-300 rounded-lg px-4 py-3 flex-grow focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
-            value={projectName}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setProjectName(e.target.value)
-            }
-            placeholder="Enter new project name"
-          />
-          <button
-            className="bg-green-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-700 transition"
-            type="submit"
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
+        {projects.map((project) => (
+          <div
+            key={project._id}
+            className="bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-lg transition duration-300 ease-in-out hover:scale-[1.03] overflow-hidden"
           >
-            Add Project
-          </button>
-        </form>
+            <div className="p-6 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-t-2xl">
+              <h2 className="text-2xl font-semibold text-white truncate">
+                {project.title}
+              </h2>
+            </div>
+
+            <div className="p-5 flex flex-col gap-3">
+              <button
+                className="w-full bg-blue-500 text-white py-3 rounded-xl shadow hover:bg-blue-600 transition"
+                onClick={() => handleSelect(project._id)}
+              >
+                📋 View Tasks
+              </button>
+
+              <button
+                className="w-full bg-red-500 text-white py-3 rounded-xl shadow hover:bg-red-600 transition"
+                onClick={() => handleDelete(project._id)}
+              >
+                ❌ Delete
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
+
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col sm:flex-row gap-4 mt-16 w-full max-w-2xl"
+      >
+        <input
+          className="border border-gray-300 bg-white text-gray-800 placeholder-gray-400 rounded-xl px-5 py-3 flex-grow focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg transition"
+          value={projectName}
+          onChange={handleProjectNameChange}
+          placeholder="✨ New project name"
+        />
+        <button
+          className="bg-green-500 text-white px-6 py-3 rounded-xl shadow hover:bg-green-600 transition"
+          type="submit"
+        >
+          ➕ Add
+        </button>
+      </form>
     </div>
   );
 };

@@ -13,9 +13,15 @@ const AppContent: React.FC = () => {
     addTask,
     updateTaskStatus,
     setSelectedProject,
+    deleteTask,
+    deleteProjectById,
   } = useProjects();
 
   console.log(projects, "ok");
+  const handleDeleteTask = async (taskId: string): Promise<string | null> => {
+    const result = await deleteTask(taskId);
+    return result;
+  };
 
   return (
     <div className="p-4  mx-auto font-sans">
@@ -24,6 +30,7 @@ const AppContent: React.FC = () => {
           projects={projects}
           onAddProject={addProject}
           onSelect={fetchTasksForProject}
+          deleteProject={deleteProjectById}
         />
       ) : (
         <TaskList
@@ -31,6 +38,7 @@ const AppContent: React.FC = () => {
           onBack={() => setSelectedProject(null)}
           onAddTask={addTask}
           onUpdateStatus={updateTaskStatus}
+          onDeleteTask={handleDeleteTask}
         />
       )}
     </div>
@@ -38,7 +46,6 @@ const AppContent: React.FC = () => {
 };
 
 const App: React.FC = () => (
-  // <ErrorBoundary>
   <ProjectProvider>
     <AppContent />
   </ProjectProvider>

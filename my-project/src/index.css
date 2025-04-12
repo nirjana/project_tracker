@@ -3,6 +3,9 @@
 @tailwind utilities;
 @import "tailwindcss";
 :root {
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 2rem;
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
