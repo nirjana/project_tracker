@@ -1,5 +1,3 @@
-// src/types.ts
-
 export interface Task {
   _id: string;
   title: string;
@@ -10,12 +8,13 @@ export interface Task {
 export interface Project {
   _id: string;
   title: string;
+  description?: string;
   tasks?: Task[];
 }
 
 export interface ProjectListProps {
   projects: Project[];
-  onAddProject: (projectName: string) => void;
+  onAddProject: (projectName: string, description: string) => void;
   onSelect: (projectId: string) => void;
   deleteProject: (projectId: string) => Promise<string | null>;
 }
@@ -25,7 +24,7 @@ export interface ProjectContextType {
   selectedProject: Project | null;
   fetchProjects: () => Promise<void>;
   fetchTasksForProject: (projectId: string) => Promise<void>;
-  addProject: (title: string) => Promise<void>;
+  addProject: (title: string, description: string) => Promise<void>;
   addTask: (projectId: string, title: string) => Promise<void>;
   updateTaskStatus: (
     projectId: string,
@@ -33,7 +32,12 @@ export interface ProjectContextType {
     status: string
   ) => Promise<void>;
   setSelectedProject: React.Dispatch<React.SetStateAction<Project | null>>;
-  deleteTask: (taskId: string) => Promise<void>;
-
   loading: boolean;
+  deleteTask: (taskId: string) => Promise<string | null>;
+  deleteProjectById: (projectId: string) => Promise<string | null>;
+  updateProject: (
+    projectId: string,
+    title: string,
+    description: string
+  ) => Promise<void>;
 }

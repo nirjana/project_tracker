@@ -13,10 +13,14 @@ export const getProjects = async (): Promise<Project[]> => {
   }
 };
 
-export const addProject = async (title: string): Promise<Project> => {
+export const addProject = async (
+  title: string,
+  description: string
+): Promise<Project> => {
   try {
     const response = await axios.post<Project>(`${API_URL}/projects`, {
       title,
+      description,
     });
     return response.data;
   } catch (error) {
@@ -26,14 +30,23 @@ export const addProject = async (title: string): Promise<Project> => {
 };
 
 export const updateProject = async (
-  id: string,
-  updatedData: Partial<Project>
+  projectId: string,
+  title: string,
+  description: string
 ): Promise<Project> => {
-  const res = await axios.patch<Project>(
-    `${API_URL}/projects/${id}`,
-    updatedData
-  );
-  return res.data;
+  try {
+    const response = await axios.put<Project>(
+      `${API_URL}/projects/${projectId}`,
+      {
+        title,
+        description,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating project:", error);
+    throw error;
+  }
 };
 
 export const addTaskToProject = async (

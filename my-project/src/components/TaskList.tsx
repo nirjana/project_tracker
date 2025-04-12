@@ -1,18 +1,7 @@
 import * as React from "react";
 import { useState, ChangeEvent } from "react";
 import AddTaskForm from "./AddTaskForm";
-
-interface Task {
-  _id: string;
-  title: string;
-  status: string;
-}
-
-interface Project {
-  _id: string;
-  title: string;
-  tasks?: Task[];
-}
+import { Project, Task } from "../types/types";
 
 interface TaskListProps {
   project: Project;
@@ -75,26 +64,26 @@ const TaskList: React.FC<TaskListProps> = ({
     <div className="flex-1 p-8 overflow-auto bg-gray-50 min-h-screen">
       <button
         onClick={onBack}
-        className="text-blue-600 border border-blue-600 px-4 py-2 rounded mb-6 hover:bg-blue-600 hover:text-white transition"
+        className="text-blue-600 border border-blue-600 px-5 py-2 rounded-lg mb-6 hover:bg-blue-600 hover:text-white transition font-medium shadow-sm"
       >
-        &larr; Back
+        ← Back
       </button>
 
       <h2
-        className="text-4xl font-bold mb-8 cursor-pointer hover:text-blue-600 transition"
+        className="text-4xl font-extrabold mb-8 cursor-pointer hover:text-blue-600 transition"
         onClick={handleTitleClick}
       >
         {project.title}
       </h2>
 
       {isModalOpen && (
-        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-40 z-50">
           <div className="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full">
             <h3 className="text-2xl font-bold mb-4">Project Title</h3>
             <p className="text-gray-700">{modalTitle}</p>
             <button
               onClick={closeModal}
-              className="mt-6 text-blue-600 border px-4 py-2 rounded hover:bg-blue-600 hover:text-white transition"
+              className="mt-6 text-blue-600 border border-blue-600 px-4 py-2 rounded-lg hover:bg-blue-600 hover:text-white transition"
             >
               Close
             </button>
@@ -103,17 +92,20 @@ const TaskList: React.FC<TaskListProps> = ({
       )}
 
       {successMessage && (
-        <div className="bg-green-500 text-white p-3 rounded mb-4">
+        <div className="bg-green-500 text-white p-3 rounded-lg mb-5 shadow animate-fade-in">
           {successMessage}
         </div>
       )}
 
       <AddTaskForm onAdd={onAddTask} projectId={project._id} />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
         {Object.keys(taskGroups).map((status) => (
-          <div key={status} className="bg-white p-5 rounded-2xl shadow-lg">
-            <h3 className="text-xl font-semibold mb-4 capitalize text-center text-gray-800 border-b pb-2">
+          <div
+            key={status}
+            className="bg-white p-5 rounded-2xl shadow-lg border border-gray-100"
+          >
+            <h3 className="text-2xl font-semibold mb-5 capitalize text-center text-gray-800 border-b pb-3">
               {status.replace("-", " ")}
             </h3>
 
@@ -122,12 +114,14 @@ const TaskList: React.FC<TaskListProps> = ({
                 {taskGroups[status].map((task) => (
                   <div
                     key={task._id}
-                    className="bg-gray-100 p-3 rounded-lg flex items-center justify-between shadow-sm hover:shadow-md transition"
+                    className="bg-gray-100 p-3 rounded-xl flex items-center justify-between shadow-sm hover:shadow-md transition"
                   >
-                    <span className="text-gray-800">{task.title}</span>
+                    <span className="text-gray-800 font-medium">
+                      {task.title}
+                    </span>
                     <div className="flex items-center gap-2">
                       <select
-                        className="border px-2 py-1 rounded text-sm bg-white"
+                        className="border border-gray-300 px-2 py-1 rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         value={task.status}
                         onChange={(e) => handleStatusChange(e, task._id)}
                       >
@@ -139,7 +133,7 @@ const TaskList: React.FC<TaskListProps> = ({
                       </select>
                       <button
                         onClick={() => handleDeleteTask(task._id)}
-                        className="text-red-500 hover:text-red-700 text-sm"
+                        className="text-red-500 hover:text-red-700 text-sm font-bold"
                         title="Delete Task"
                       >
                         ✕
@@ -149,7 +143,7 @@ const TaskList: React.FC<TaskListProps> = ({
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 text-center">No tasks.</p>
+              <p className="text-gray-500 text-center mt-4">No tasks.</p>
             )}
           </div>
         ))}

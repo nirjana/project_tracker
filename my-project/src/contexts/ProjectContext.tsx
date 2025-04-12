@@ -3,42 +3,14 @@ import {
   getProjects,
   addProject as addProjectAPI,
   getTasksByProject,
+  updateProject as updateProjectAPI,
   deleteTask as deleteTaskAPI,
   addTaskToProject,
   updateTaskStatus as updateTaskStatusAPI,
   deleteProject,
 } from "../services/projectService";
 import * as React from "react";
-
-export interface Task {
-  _id: string;
-  title: string;
-  status: string;
-}
-
-export interface Project {
-  _id: string;
-  title: string;
-  tasks?: Task[];
-}
-
-interface ProjectContextType {
-  projects: Project[];
-  selectedProject: Project | null;
-  fetchProjects: () => Promise<void>;
-  fetchTasksForProject: (projectId: string) => Promise<void>;
-  addProject: (title: string) => Promise<void>;
-  addTask: (projectId: string, title: string) => Promise<void>;
-  updateTaskStatus: (
-    projectId: string,
-    taskId: string,
-    status: string
-  ) => Promise<void>;
-  setSelectedProject: React.Dispatch<React.SetStateAction<Project | null>>;
-  loading: boolean;
-  deleteTask: (taskId: string) => Promise<string | null>; // updated here
-  deleteProjectById: (projectId: string) => Promise<string | null>;
-}
+import { Project, ProjectContextType } from "../types/types";
 
 export type { ProjectContextType };
 export const ProjectContext = createContext<ProjectContextType | undefined>(
@@ -83,9 +55,9 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({
     }
   };
 
-  const addProject = async (title: string) => {
+  const addProject = async (title: string, description: string) => {
     try {
-      const newProject = await addProjectAPI(title);
+      const newProject = await addProjectAPI(title, description); // Pass description
       setProjects((prev) => [...prev, newProject]);
     } catch (err) {
       console.error("Error adding project:", err);
@@ -165,6 +137,23 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({
     }
   };
 
+  const updateProject = async (
+    projectId: string,
+    title: string,
+    description: string
+  ) => {
+    try {
+      await updateProjectAPI(projectId, title, description);
+      setProjects((prev) =>
+        prev.map((proj) =>
+          proj._id === projectId ? { ...proj, title, description } : proj
+        )
+      );
+    } catch (err) {
+      console.error("Error updating project:", err);
+    }
+  };
+
   return (
     <ProjectContext.Provider
       value={{
@@ -178,7 +167,7 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({
         deleteTask,
         setSelectedProject,
         deleteProjectById,
-
+        updateProject,
         loading,
       }}
     >
