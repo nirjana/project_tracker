@@ -26,7 +26,7 @@ Project Management
 
 1 Clone the repository
 
-🔧 Backend Setup (Node + Express)
+# 🔧 Backend Setup (Node + Express + MongoDB )
 
 Navigate to the backend folder
 
