@@ -12,6 +12,16 @@ export interface Project {
   tasks?: Task[];
 }
 
+export interface AddTaskResponse {
+  success: boolean;
+  data: Task;
+}
+
+export interface TaskResponse {
+  success: boolean;
+  data: Task[];
+}
+
 export interface ProjectListProps {
   projects: Project[];
   onAddProject: (projectName: string, description: string) => void;
