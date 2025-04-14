@@ -1,56 +1,74 @@
 import Project from "../models/project.js";
 import Task from "../models/task.js";
+import mongoose from "mongoose";
+import createError from "../utils/createError.js";
 
-const getProjects = async (req, res) => {
+export const getProjects = async (req, res, next) => {
   try {
     const projects = await Project.find();
-    res.json(projects);
+    res.status(200).json({ success: true, data: projects });
   } catch (error) {
     next(error);
   }
 };
 
-const createProject = async (req, res) => {
+export const createProject = async (req, res, next) => {
+  const { title, description } = req.body;
+
+  if (!title) {
+    return next(createError(400, "Project title is required"));
+  }
+
   try {
-    const { title, description } = req.body;
     const newProject = new Project({ title, description });
-    await newProject.save();
-    res.status(201).json(newProject);
+    const savedProject = await newProject.save();
+    res.status(201).json({ success: true, data: savedProject });
   } catch (error) {
     next(error);
   }
 };
 
-const deleteProject = async (req, res, next) => {
+export const deleteProject = async (req, res, next) => {
   const { projectId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(projectId)) {
+    return next(createError(400, "Invalid projectId format"));
+  }
 
   try {
     const tasks = await Task.find({ projectId });
-
     const deletedProject = await Project.findByIdAndDelete(projectId);
 
     if (!deletedProject) {
-      return res.status(404).json({ message: "Project not found" });
+      return next(createError(404, "Project not found"));
     }
 
     if (tasks.length > 0) {
       await Task.deleteMany({ projectId });
-      res
-        .status(200)
-        .json({ message: "Project and associated tasks deleted successfully" });
+      res.status(200).json({
+        success: true,
+        message: "Project and associated tasks deleted successfully",
+        data: deletedProject,
+      });
     } else {
-      res
-        .status(200)
-        .json({ message: "No tasks found, deleting project only" });
+      res.status(200).json({
+        success: true,
+        message: "No tasks found, deleting project only",
+        data: deletedProject,
+      });
     }
   } catch (error) {
     next(error);
   }
 };
 
-const updateProject = async (req, res, next) => {
+export const updateProject = async (req, res, next) => {
   const { projectId } = req.params;
   const { title, description } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(projectId)) {
+    return next(createError(400, "Invalid projectId format"));
+  }
 
   try {
     const updatedProject = await Project.findByIdAndUpdate(
@@ -60,13 +78,11 @@ const updateProject = async (req, res, next) => {
     );
 
     if (!updatedProject) {
-      return res.status(404).json({ message: "Project not found" });
+      return next(createError(404, "Project not found"));
     }
 
-    res.status(200).json(updatedProject);
+    res.status(200).json({ success: true, data: updatedProject });
   } catch (error) {
     next(error);
   }
 };
-
-export { getProjects, createProject, deleteProject, updateProject };
