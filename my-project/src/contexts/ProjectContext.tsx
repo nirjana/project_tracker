@@ -26,6 +26,7 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({
 }) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -67,6 +68,7 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({
   const addTask = async (projectId: string, title: string) => {
     try {
       const newTask = await addTaskToProject(projectId, title);
+
       setSelectedProject((prev) =>
         prev ? { ...prev, tasks: [...(prev.tasks || []), newTask] } : prev
       );

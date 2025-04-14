@@ -1,39 +1,44 @@
 import Task from "../models/task.js";
 import mongoose from "mongoose";
+import createError from "../utils/createError.js";
 
-export const getTasks = async (req, res) => {
+export const getTasks = async (req, res, next) => {
   try {
     const tasks = await Task.find();
-    res.json(tasks);
+    res.status(200).json({ success: true, data: tasks });
   } catch (error) {
     next(error);
   }
 };
 
-export const getTasksByProject = async (req, res) => {
-  const tasks = await Task.find({ projectId: req.params.projectId });
-  res.json(tasks);
+export const getTasksByProject = async (req, res, next) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.projectId)) {
+      return next(createError(400, "Invalid projectId format"));
+    }
+
+    const tasks = await Task.find({ projectId: req.params.projectId });
+    res.status(200).json({ success: true, data: tasks });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const createTask = async (req, res, next) => {
   const { title, status, projectId } = req.body;
 
   if (!title || !projectId) {
-    const err = new Error("Title and projectId required");
-    err.statusCode = 400;
-    return next(err);
+    return next(createError(400, "Title and projectId are required"));
   }
 
   if (!mongoose.Types.ObjectId.isValid(projectId)) {
-    const err = new Error("Invalid projectId format");
-    err.statusCode = 400;
-    return next(err);
+    return next(createError(400, "Invalid projectId format"));
   }
 
   try {
     const task = new Task({ title, status, projectId });
-    const saved = await task.save();
-    res.status(201).json(saved);
+    const savedTask = await task.save();
+    res.status(201).json({ success: true, data: savedTask });
   } catch (error) {
     next(error);
   }
@@ -41,28 +46,24 @@ export const createTask = async (req, res, next) => {
 
 export const updateTaskStatus = async (req, res, next) => {
   const { status } = req.body;
-  const allowed = ["todo", "in-progress", "done"];
+  const allowedStatuses = ["todo", "in-progress", "done"];
 
-  if (!allowed.includes(status)) {
-    const err = new Error("Invalid status");
-    err.statusCode = 400;
-    return next(err);
+  if (!allowedStatuses.includes(status)) {
+    return next(createError(400, "Invalid status value"));
   }
 
   try {
-    const updated = await Task.findByIdAndUpdate(
+    const updatedTask = await Task.findByIdAndUpdate(
       req.params.id,
       { status },
       { new: true }
     );
 
-    if (!updated) {
-      const err = new Error("Task not found");
-      err.statusCode = 404;
-      return next(err);
+    if (!updatedTask) {
+      return next(createError(404, "Task not found"));
     }
 
-    res.json(updated);
+    res.status(200).json({ success: true, data: updatedTask });
   } catch (error) {
     next(error);
   }
@@ -73,12 +74,14 @@ export const deleteTask = async (req, res, next) => {
     const deletedTask = await Task.findByIdAndDelete(req.params.id);
 
     if (!deletedTask) {
-      const err = new Error("Task not found");
-      err.statusCode = 404;
-      return next(err);
+      return next(createError(404, "Task not found"));
     }
 
-    res.json({ message: "Task deleted successfully", task: deletedTask });
+    res.status(200).json({
+      success: true,
+      message: "Task deleted successfully",
+      data: deletedTask,
+    });
   } catch (error) {
     next(error);
   }
