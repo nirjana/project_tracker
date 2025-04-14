@@ -1,12 +1,19 @@
 import axios from "axios";
-import { AddTaskResponse, Project, Task, TaskResponse } from "../types/types";
+import {
+  AddProjectResponse,
+  AddTaskResponse,
+  Project,
+  ProjectResponse,
+  Task,
+  TaskResponse,
+} from "../types/types";
 
 const API_URL = "http://localhost:4000/api";
 
 export const getProjects = async (): Promise<Project[]> => {
   try {
-    const response = await axios.get<Project[]>(`${API_URL}/projects`);
-    return response.data;
+    const response = await axios.get<ProjectResponse>(`${API_URL}/projects`);
+    return response?.data?.data;
   } catch (error) {
     console.error("Error loading projects:", error);
     throw error;
@@ -18,11 +25,14 @@ export const addProject = async (
   description: string
 ): Promise<Project> => {
   try {
-    const response = await axios.post<Project>(`${API_URL}/projects`, {
-      title,
-      description,
-    });
-    return response.data;
+    const response = await axios.post<AddProjectResponse>(
+      `${API_URL}/projects`,
+      {
+        title,
+        description,
+      }
+    );
+    return response?.data?.data;
   } catch (error) {
     console.error("Error adding project:", error);
     throw error;
@@ -35,14 +45,14 @@ export const updateProject = async (
   description: string
 ): Promise<Project> => {
   try {
-    const response = await axios.put<Project>(
+    const response = await axios.put<AddProjectResponse>(
       `${API_URL}/projects/${projectId}`,
       {
         title,
         description,
       }
     );
-    return response.data;
+    return response?.data?.data;
   } catch (error) {
     console.error("Error updating project:", error);
     throw error;
@@ -58,7 +68,7 @@ export const addTaskToProject = async (
       projectId,
       title,
     });
-    return response.data.data;
+    return response?.data?.data;
   } catch (error) {
     console.error("Error adding task:", error);
     throw error;

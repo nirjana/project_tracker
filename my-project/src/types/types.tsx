@@ -17,7 +17,16 @@ export interface AddTaskResponse {
   data: Task;
 }
 
+export interface AddProjectResponse {
+  success: boolean;
+  data: Task;
+}
 export interface TaskResponse {
+  success: boolean;
+  data: Task[];
+}
+
+export interface ProjectResponse {
   success: boolean;
   data: Task[];
 }
