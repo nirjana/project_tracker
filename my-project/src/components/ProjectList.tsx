@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, FormEvent, ChangeEvent } from "react";
+import { useState, FormEvent } from "react";
 import { Project, ProjectListProps } from "../types/types";
 import { updateProject } from "../services/projectService";
 import { useContext } from "react";
